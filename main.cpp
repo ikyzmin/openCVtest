@@ -2,25 +2,57 @@
 #include <opencv2/opencv.hpp>
 
 using namespace cv;
+using namespace std;
 
 int main(int argc, char** argv )
 {
-    if ( argc != 2 )
-    {
-        printf("usage: DisplayImage.out <Image_Path>\n");
-        return -1;
-    }
 
     Mat image;
-    image = imread( argv[1], 1 );
+    image = imread( "../banana.jpg", 1);
 
     if ( !image.data )
     {
         printf("No image data \n");
-        return -1;
+        return 0;
     }
     namedWindow("Display Image", WINDOW_AUTOSIZE );
     imshow("Display Image", image);
+    namedWindow("Copy Image",WINDOW_AUTOSIZE);
+    Mat copy;
+    image.copyTo(copy);
+    imshow("Copy Image",copy);
+    Mat convertedImage;
+    cvtColor(image,convertedImage,CV_RGB2GRAY,0);
+    namedWindow("Converted to gray scaled Image",WINDOW_AUTOSIZE);
+    imshow("Converted to gray scaled Image",convertedImage);
+    Mat resizedImage;
+    Size size(100,100);
+    resize(image,resizedImage,size,0,0,INTER_LINEAR);
+    namedWindow("Resized Image",WINDOW_AUTOSIZE);
+    imshow("Resized Image",resizedImage);
+
+    namedWindow("Image ROI [100,100]",WINDOW_AUTOSIZE);
+    imshow("Image ROI [100,100]",image(Rect(100,100,100,100)));
+
+    Mat binImage;
+    threshold(convertedImage,binImage,175,255,CV_THRESH_BINARY);
+    namedWindow("Bin image",WINDOW_AUTOSIZE);
+    imshow("Bin image",binImage);
+
+    vector<vector<Point>> contours;
+    findContours(binImage,contours,CV_RETR_CCOMP,CV_CHAIN_APPROX_SIMPLE);
+
+    Scalar color(0,255,0);
+    namedWindow("Contour",WINDOW_AUTOSIZE);
+    drawContours(copy,contours,-1,color,2);
+    imshow("Contour",copy);
+
+    copy.release();
+    convertedImage.release();
+    resizedImage.release();
+    image.release();
+    binImage.release();
+
 
     waitKey(0);
 
