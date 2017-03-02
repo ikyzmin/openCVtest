@@ -9,6 +9,7 @@ int main(int argc, char** argv )
 
     Mat image;
     image = imread( "../banana.jpg", 1);
+    imwrite("../banana_saved.jpg",image);
 
     if ( !image.data )
     {
