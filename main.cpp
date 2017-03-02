@@ -41,11 +41,12 @@ int main(int argc, char** argv )
     imshow("Bin image",binImage);
 
     vector<vector<Point>> contours;
-    findContours(binImage,contours,CV_RETR_CCOMP,CV_CHAIN_APPROX_SIMPLE);
+    findContours(binImage,contours,CV_RETR_TREE,CV_CHAIN_APPROX_TC89_L1);
 
     Scalar color(0,255,0);
     namedWindow("Contour",WINDOW_AUTOSIZE);
     drawContours(copy,contours,-1,color,2);
+    imwrite("../CV_CHAIN_APPROX_TC89_L1.jpg",copy);
     imshow("Contour",copy);
 
     copy.release();
